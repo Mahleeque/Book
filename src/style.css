@@ -1,0 +1,84 @@
+
+body {
+  background: #f9f9f9;
+  color: #222;
+  font-family: Arial, sans-serif;
+}
+.card {
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  border: 1px solid #eee;
+  margin-bottom: 2rem;
+}
+.card-header {
+  background: none;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  color: #222;
+}
+.table {
+  background: #fff;
+  font-size: 1rem;
+  border-radius: 4px;
+}
+.table th, .table td {
+  vertical-align: middle;
+  padding: 0.7em 0.5em;
+  color: #222;
+}
+.table-hover tbody tr:hover {
+  background-color: #f0f0f0;
+}
+.btn {
+  border-radius: 4px;
+  font-size: 0.95rem;
+  padding: 0.4em 1em;
+  background: #eee;
+  color: #222;
+  border: 1px solid #ddd;
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #e0e0e0;
+}
+.btn-outline-warning {
+  background: none;
+  color: #b8860b;
+  border: 1px solid #b8860b;
+}
+.btn-outline-warning:hover {
+  background: #b8860b;
+  color: #fff;
+}
+.btn-outline-danger {
+  background: none;
+  color: #c00;
+  border: 1px solid #c00;
+}
+.btn-outline-danger:hover {
+  background: #c00;
+  color: #fff;
+}
+.badge {
+  font-size: 0.95em;
+  padding: 0.4em 0.7em;
+  border-radius: 0.4em;
+  background: #eee;
+  color: #222;
+}
+.form-check-input {
+  cursor: pointer;
+}
+.text-muted {
+  color: #888 !important;
+}
+
+.logo, .logo.react, .read-the-docs {
+  display: none !important;
+}
