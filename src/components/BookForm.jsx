@@ -1,154 +1,135 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Form, Button, Card } from 'react-bootstrap'
 
 export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit }) {
-  const isEditing = !!currentBook
-
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [year, setYear] = useState('')
   const [genre, setGenre] = useState('')
+  const [price, setPrice] = useState('')
 
-  
   useEffect(() => {
-    if (isEditing) {
+    if (currentBook) {
       setTitle(currentBook.title)
       setAuthor(currentBook.author)
       setYear(currentBook.year)
-      setGenre(currentBook.genre)
+      setGenre(currentBook.genre || '')
+      setPrice(currentBook.price || '')
     } else {
-      
       setTitle('')
       setAuthor('')
       setYear('')
       setGenre('')
+      setPrice('')
     }
-  }, [currentBook, isEditing])
+  }, [currentBook])
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!title.trim() || !author.trim()) {
-      alert('Please fill in title and author.')
-      return
+    const bookData = {
+      id: currentBook ? currentBook.id : Date.now().toString(),
+      title,
+      author,
+      year: parseInt(year) || 'N/A',
+      genre: genre || 'Unspecified',
+      price: parseFloat(price) || 0
     }
-    const book = {
-      id: isEditing ? currentBook.id : `b_${Date.now()}`,
-      title: title.trim(),
-      author: author.trim(),
-      year: year ? parseInt(year, 10) : undefined,
-      genre: genre || '',
-    }
-    if (isEditing) {
-      onUpdate(book)
-      onCancelEdit()
+
+    if (currentBook) {
+      onUpdate(bookData)
     } else {
-      onCreate(book)
-      
-      setTitle('')
-      setAuthor('')
-      setYear('')
-      setGenre('')
+      onCreate(bookData)
     }
+
+    setTitle('')
+    setAuthor('')
+    setYear('')
+    setGenre('')
+    setPrice('')
   }
 
   return (
-    <div className="card border-0 h-100">
-      <div className="card-header bg-transparent border-0 pb-2">
-        <div className="d-flex align-items-center">
-          <div className={`rounded-4 p-3 me-3 ${isEditing ? 'bg-warning bg-opacity-15' : 'bg-success bg-opacity-15'}`}>
-            <i className={`bi ${isEditing ? 'bi-pencil-square text-warning' : 'bi-plus-circle text-success'} fs-4`}></i>
-          </div>
-          <div>
-            <h4 className="card-title mb-1 fw-bold">
-              {isEditing ? 'Edit Book Details' : 'Add New Book'}
-            </h4>
-            <p className="text-muted mb-0 fw-medium">
-              {isEditing ? 'Update the book information below' : 'Enter the book details to add to your library'}
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="card-body pt-4">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="form-label">
-              <i className="bi bi-book me-2"></i>
-              Book Title <span className="text-danger">*</span>
-            </label>
-            <input
-              className="form-control form-control-lg"
+    <Card className="shadow-sm">
+      <Card.Header>
+        <h5 className="mb-0">{currentBook ? 'Edit Book' : 'Add New Book'}</h5>
+      </Card.Header>
+      <Card.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter book title"
               value={title}
+ 
+ 
+ 
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter the book title"
               required
             />
-          </div>
-          
-          <div className="mb-4">
-            <label className="form-label">
-              <i className="bi bi-person me-2"></i>
-              Author Name <span className="text-danger">*</span>
-            </label>
-            <input
-              className="form-control form-control-lg"
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Author</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter author name"
+     
+     
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              placeholder="Enter the author's name"
               required
             />
-          </div>
-          
-          <div className="row g-3 mb-5">
-            <div className="col-sm-6">
-              <label className="form-label">
-                <i className="bi bi-calendar3 me-2"></i>
-                Publication Year
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-                placeholder="e.g., 2023"
-                min="2000"
-                max={new Date().getFullYear()}
-              />
-            </div>
-            <div className="col-sm-6">
-              <label className="form-label">
-                <i className="bi bi-tags me-2"></i>
-                Genre Category
-              </label>
-              <input
-                className="form-control"
-                value={genre}
-                onChange={(e) => setGenre(e.target.value)}
-                placeholder="e.g., Fiction, Science, Biography"
-              />
-            </div>
-          </div>
-          
-          <div className="d-grid gap-3 d-md-flex justify-content-md-end">
-            {isEditing && (
-              <button
-                type="button"
-                className="btn btn-outline-secondary btn-lg px-4"
-                onClick={onCancelEdit}
-              >
-                <i className="bi bi-x-circle me-2"></i>
-                Cancel Changes
-              </button>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Year</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter published year"
+              value={year}
+              min={1000}
+              max={new Date().getFullYear()}
+              onChange={(e) => setYear(e.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Genre</Form.Label>
+            <Form.Select value={genre} onChange={(e) => setGenre(e.target.value)}>
+              <option value="">-- Select Genre --</option>
+              <option value="Fiction">Fiction</option>
+              <option value="Non-Fiction">Non-Fiction</option>
+              <option value="Dystopian">Dystopian</option>
+              <option value="Biography">Biography</option>
+              <option value="Science">Science</option>
+              <option value="Fantasy">Fantasy</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Price ($)</Form.Label>
+            <Form.Control
+              type="number"
+              step="0.01"
+              placeholder="Enter book price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+            />
+          </Form.Group>
+
+          <div className="d-flex justify-content-between">
+            <Button variant="primary" type="submit">
+              {currentBook ? 'Update Book' : 'Add Book'}
+            </Button>
+            {currentBook && (
+              <Button variant="secondary" onClick={onCancelEdit}>
+                Cancel
+              </Button>
             )}
-            <button
-              type="submit"
-              className={`btn btn-lg px-4 ${isEditing ? 'btn-warning' : 'btn-success'}`}
-            >
-              <i className={`bi ${isEditing ? 'bi-check-circle' : 'bi-plus-circle'} me-2`}></i>
-              {isEditing ? 'Update Book' : 'Add to Library'}
-            </button>
           </div>
-        </form>
-      </div>
-    </div>
+        </Form>
+      </Card.Body>
+    </Card>
   )
 }
