@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react'
-import { Form, Button, Card } from 'react-bootstrap'
+import { Form, Button, Card, Alert } from 'react-bootstrap'
 
 export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit }) {
   const [title, setTitle] = useState('')
@@ -7,6 +8,7 @@ export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit
   const [year, setYear] = useState('')
   const [genre, setGenre] = useState('')
   const [price, setPrice] = useState('')
+  const [error, setError] = useState('') 
 
   useEffect(() => {
     if (currentBook) {
@@ -22,17 +24,37 @@ export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit
       setGenre('')
       setPrice('')
     }
+    setError('')
   }, [currentBook])
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    
+    if (!title.trim()) {
+      setError('Title is required.')
+      return
+    }
+    if (!author.trim()) {
+      setError('Author is required.')
+      return
+    }
+    if (year && (isNaN(year) || year < 1000 || year > new Date().getFullYear())) {
+      setError('Year must be between 1000 and the current year.')
+      return
+    }
+    if (price && price < 0) {
+      setError('Price cannot be negative.')
+      return
+    }
+
     const bookData = {
       id: currentBook ? currentBook.id : Date.now().toString(),
       title,
       author,
-      year: parseInt(year) || 'N/A',
+      year: year ? parseInt(year) : 'N/A',
       genre: genre || 'Unspecified',
-      price: parseFloat(price) || 0
+      price: price ? parseFloat(price) : 0
     }
 
     if (currentBook) {
@@ -46,6 +68,7 @@ export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit
     setYear('')
     setGenre('')
     setPrice('')
+    setError('')
   }
 
   return (
@@ -54,6 +77,7 @@ export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit
         <h5 className="mb-0">{currentBook ? 'Edit Book' : 'Add New Book'}</h5>
       </Card.Header>
       <Card.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
             <Form.Label>Title</Form.Label>
@@ -61,11 +85,7 @@ export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit
               type="text"
               placeholder="Enter book title"
               value={title}
- 
- 
- 
               onChange={(e) => setTitle(e.target.value)}
-              required
             />
           </Form.Group>
 
@@ -74,11 +94,8 @@ export default function BookForm({ onCreate, onUpdate, currentBook, onCancelEdit
             <Form.Control
               type="text"
               placeholder="Enter author name"
-     
-     
               value={author}
               onChange={(e) => setAuthor(e.target.value)}
-              required
             />
           </Form.Group>
 
